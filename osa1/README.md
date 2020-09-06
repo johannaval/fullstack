@@ -10,5 +10,6 @@ npm install
   ``` 
 npm start
  ``` 
+ 5. siirry selaimella osoitteeseen http://localhost:3000/
 
 
