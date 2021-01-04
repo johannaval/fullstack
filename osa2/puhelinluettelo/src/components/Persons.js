@@ -1,17 +1,19 @@
 import React from 'react'
 import Person from './Person'
 
-const Persons = (props) => {
+const Persons = ({ filteredList, deletePerson }) => {
 
-
+    if (filteredList == null) {
+        return (
+            <>
+            </>
+        )
+    }
     return (
         <div>
-            {props.filteredList.map((person) =>
-                <Person name={person.name} key={person.name} number={person.number} />
-            )}
+            {filteredList.map((p) => <Person key={p.id} name={p.name} id={p.id} number={p.number} deletePerson={deletePerson} />)}
         </div>
     )
 }
-
 
 export default Persons

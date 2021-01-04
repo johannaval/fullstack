@@ -4,8 +4,8 @@ const FilterPersons = (props) => {
 
     return (
         <div>
-            <p>filter shown with</p>
-            <input value={props.filter} onChange={props.handleNewFilter} />
+            <p>filter shown with
+            <input value={props.filter} onChange={props.handleNewFilter} /> </p>
         </div>
     )
 }

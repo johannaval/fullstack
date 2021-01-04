@@ -1,0 +1,69 @@
+{
+  "persons": [
+    {
+      "name": "Arto Hellas",
+      "number": "040-123456",
+      "id": 1
+    },
+    {
+      "name": "Ada Lovelace",
+      "number": "39-44-5323523",
+      "id": 2
+    },
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345",
+      "id": 3
+    },
+    {
+      "name": "Mary Poppendieck",
+      "number": "39-23-6423122",
+      "id": 4
+    },
+    {
+      "name": "Pekka Poutis",
+      "number": "837-092-283",
+      "id": 10
+    },
+    {
+      "name": "Tarha Halis",
+      "number": "299-345-224",
+      "id": 11
+    },
+    {
+      "name": "Lennu-koira",
+      "number": "231-225-890",
+      "id": 12
+    },
+    {
+      "name": "Mauno-mato",
+      "number": "584-135-684",
+      "id": 17
+    },
+    {
+      "name": "Maisa",
+      "number": "53-4663-3463",
+      "id": 18
+    },
+    {
+      "name": "Masa",
+      "number": "345-253-235",
+      "id": 19
+    },
+    {
+      "name": "Miisa",
+      "number": "11",
+      "id": 22
+    },
+    {
+      "name": "Milski",
+      "number": "5345-45-45",
+      "id": 24
+    },
+    {
+      "name": "Milla",
+      "number": "99393",
+      "id": 25
+    }
+  ]
+}
