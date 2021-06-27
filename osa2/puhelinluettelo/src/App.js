@@ -1,112 +1,106 @@
 import React, { useState, useEffect } from 'react'
-import Persons from './components/Persons'
 import Person from './components/Person'
-import FilterPersons from './components/FilterPersons'
-import AddNewForm from './components/AddNewForm'
-import contactService from './services/contacts'
+import Persons from './components/Persons'
 import Notification from './components/Notification'
+import Filter from './components/Filter'
+import AddNew from './components/AddNew'
+import Contacts from './services/Contacts'
 import './index.css'
 
 const App = () => {
-  const [notification, setNotification] = useState(null)
-  const [errorNotification, setErrorNotification] = useState(null)
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [filterNames, setFilter] = useState('')
+  const [newFilter, setNewFilter] = useState('')
+  const [positiveNotification, setPositiveNotification] = useState(null)
+  const [errorNotification, setErrorNotification] = useState(null)
 
   useEffect(() => {
 
-    contactService
+    Contacts
       .getAll()
-      .then(list => {
-        setPersons(list)
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   },
     [])
 
-  const handleNewName = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleNewNumber = (event) => {
-    setNewNumber(event.target.value)
-  }
-
-  const handleNewFilter = (event) => {
-    setFilter(event.target.value)
-  }
-
-  const userConfirmed = () => {
-
-    var confirmed = new Boolean(false)
-    confirmed = (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`))
-    return confirmed
-  }
-
-  const findByName = ({ name }) => {
-    return persons.find(person => person?.name === name)
-  }
-
-  const notificationTime = () => {
-    setTimeout(() => {
-      setNotification(null)
-    }, 3000)
-  }
-
-  const addName = (event) => {
+  const addPerson = (event) => {
     event.preventDefault()
+
     const nameObject = {
       name: newName,
       number: newNumber,
     }
-
     var unique = new Boolean(true);
+    const person = persons.find(person => person.name === nameObject.name)
 
-    persons.forEach(person => {
-      if (person?.name === nameObject.name) {
-        unique = false
-      }
-    })
+    if (person !== undefined) {
+      unique = false
+    }
 
     if (unique) {
       setPersons(persons.concat(nameObject))
-      setNewName('')
-      setNewNumber('')
 
-      contactService
+      Contacts
         .create(nameObject)
         .then(response => {
           setPersons(persons.concat(response.data))
         })
-      setNotification(`Added ${newName}`)
-      notificationTime()
+
+      setPositiveNotification(`Added ${nameObject.name}`)
+      positiveNotificationTime()
+
 
     } else {
-
-      if (userConfirmed()) {
-        event.preventDefault()
-
-        const updatePerson = persons.find(person => person?.name === newName)
-
-        contactService.update(updatePerson.id, nameObject)
-          .then(person => {
-            setPersons(persons.map(updatePerson =>
-              updatePerson.name === person.name && updatePerson.id === person.id
-                ? person
-                : updatePerson))
-
-            setNotification(`Changed the phone number of ${person.name}`)
-            notificationTime()
-          })
-          .catch(error => {
-            setPersons(persons.filter(person => person?.id !== updatePerson.id))
-            setErrorNotification(`Information of ${newName} has already been removed from server`)
-            notificationTime()
-          })
+      var confirmed = new Boolean(false)
+      confirmed = window.confirm(`${nameObject.name} is already added to phonebook, replace the old number with a new one?`)
+      if (confirmed) {
+        updateNumber(nameObject)
       }
-      setNewName('')
-      setNewNumber('')
+    }
+    setNewName('')
+    setNewNumber('')
+  }
+
+  const updateNumber = (nameObject) => {
+
+    const person = persons.find(person => person.name === nameObject.name)
+    const id = person.id
+    const newNumber = nameObject.number
+    const changedPerson = { ...person, number: newNumber }
+
+    Contacts
+      .update(person.id, changedPerson)
+      .then(p => {
+        setPersons(persons.map(p => p.id !== id ? p : changedPerson))
+        setPositiveNotification(`Changed the phone number of ${person.name}`)
+        positiveNotificationTime()
+      })
+      .catch(error => {
+        setErrorNotification(`Information of ${person.name} has already been removed from the server`)
+        errorNotificationTime()
+      })
+  }
+
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const handleFilterChange = (event) => {
+    setNewFilter(event.target.value)
+  }
+
+  const getFilteredPersons = () => {
+
+    if (newFilter === null) {
+      return persons
+    } else {
+      return persons.filter(person => person?.name.toLowerCase().includes(newFilter.toLowerCase()))
     }
   }
 
@@ -116,40 +110,50 @@ const App = () => {
     setPersons(newList)
   }
 
-
   const deletePersonById = (id) => {
 
-    const person = persons.find(person => person.id === id);
-    if (person != null && window.confirm(`Delete ${person.name}?`)) {
-      contactService
-        .delet(id)
+    const person = persons.find(person => person.id === id)
+
+    var confirmed = new Boolean(false)
+    confirmed = window.confirm(`Delete ${person.name} ?`)
+
+    if (confirmed) {
+      Contacts.delete(id)
         .then(i => {
           deletePersonFromList(id)
-          setNotification(`Deleted ${person.name}`)
-          notificationTime()
         })
+
+      setPositiveNotification(`Deleted ${person.name}`)
+      positiveNotificationTime()
     }
   }
 
-  const filteredList = persons.filter(person => person?.name.toLowerCase().includes(filterNames.toLowerCase()))
+  const positiveNotificationTime = () => {
+    setTimeout(() => {
+      setPositiveNotification(null)
+    }, 3000)
+  }
+
+  const errorNotificationTime = () => {
+    setTimeout(() => {
+      setErrorNotification(null)
+    }, 3000)
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification notification={notification} type={'normal'} />
+      <Notification notification={positiveNotification} type={'positive'} />
       <Notification notification={errorNotification} type={'error'} />
-      <FilterPersons filter={filterNames} handleNewFilter={handleNewFilter} />
-      <AddNewForm
-        addName={addName}
-        handleNewName={handleNewName}
-        name={newName}
-        handleNewNumber={handleNewNumber}
-        number={newNumber}
-      />
+      <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
+      <AddNew addPerson={addPerson} newName={newName} handleNameChange={handleNameChange}
+        newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons filteredList={filteredList} deletePerson={deletePersonById} />
+      <Persons list={getFilteredPersons().map(person =>
+        <Person key={person.id} id={person.id} person={person} deletePerson={deletePersonById} />
+      )} />
     </div>
   )
-}
 
+}
 export default App

@@ -1,16 +1,24 @@
-import React from 'react';
+import React from 'react'
 
 const Notification = (props) => {
 
-    if (props.notification != null) {
+    if (props.notification === null) {
         return (
-            <div className={props.type}>
-                {props.notification}
-            </div >
+            <div></div>
         )
     } else {
-        return (null)
+        if (props.type === "error") {
+            return (
+                <div className="error">
+                    <p>{props.notification}</p>
+                </div>)
+        } else {
+            return (
+                <div className="positive">
+                    <p>{props.notification}</p>
+                </div>)
+        }
     }
 }
 
-export default Notification;
+export default Notification
