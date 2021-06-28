@@ -16,7 +16,6 @@ const App = () => {
   const [errorNotification, setErrorNotification] = useState(null)
 
   useEffect(() => {
-
     Contacts
       .getAll()
       .then(initialPersons => {
@@ -40,21 +39,27 @@ const App = () => {
     }
 
     if (unique) {
-      setPersons(persons.concat(nameObject))
 
       Contacts
         .create(nameObject)
         .then(response => {
           setPersons(persons.concat(response.data))
+          setPositiveNotification(`Added ${nameObject.name}`)
+          positiveNotificationTime()
+          setPersons(persons.concat(nameObject))
+
         })
-
-      setPositiveNotification(`Added ${nameObject.name}`)
-      positiveNotificationTime()
-
-
+        .catch(error => {
+          const errorMessage = error.response.data.error
+          setErrorNotification(`${errorMessage}`)
+          errorNotificationTime()
+        }
+        )
     } else {
+
       var confirmed = new Boolean(false)
       confirmed = window.confirm(`${nameObject.name} is already added to phonebook, replace the old number with a new one?`)
+
       if (confirmed) {
         updateNumber(nameObject)
       }
@@ -63,6 +68,7 @@ const App = () => {
     setNewNumber('')
   }
 
+  
   const updateNumber = (nameObject) => {
 
     const person = persons.find(person => person.name === nameObject.name)
