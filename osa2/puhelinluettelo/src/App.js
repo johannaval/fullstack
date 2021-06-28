@@ -16,6 +16,7 @@ const App = () => {
   const [errorNotification, setErrorNotification] = useState(null)
 
   useEffect(() => {
+
     Contacts
       .getAll()
       .then(initialPersons => {
@@ -46,17 +47,14 @@ const App = () => {
           setPersons(persons.concat(response.data))
           setPositiveNotification(`Added ${nameObject.name}`)
           positiveNotificationTime()
-          setPersons(persons.concat(nameObject))
-
         })
         .catch(error => {
           const errorMessage = error.response.data.error
           setErrorNotification(`${errorMessage}`)
           errorNotificationTime()
-        }
-        )
-    } else {
+        })
 
+    } else {
       var confirmed = new Boolean(false)
       confirmed = window.confirm(`${nameObject.name} is already added to phonebook, replace the old number with a new one?`)
 
@@ -68,11 +66,11 @@ const App = () => {
     setNewNumber('')
   }
 
-  
   const updateNumber = (nameObject) => {
 
     const person = persons.find(person => person.name === nameObject.name)
     const id = person.id
+    const name = nameObject.name
     const newNumber = nameObject.number
     const changedPerson = { ...person, number: newNumber }
 
@@ -84,7 +82,12 @@ const App = () => {
         positiveNotificationTime()
       })
       .catch(error => {
-        setErrorNotification(`Information of ${person.name} has already been removed from the server`)
+        if (name.length < 3 || newNumber.length < 8) {
+          const errorMessage = error.response.data.error
+          setErrorNotification(`${errorMessage}`)
+        } else {
+          setErrorNotification(`Information of ${person.name} has already been removed from the server`)
+        }
         errorNotificationTime()
       })
   }
@@ -127,10 +130,13 @@ const App = () => {
       Contacts.delete(id)
         .then(i => {
           deletePersonFromList(id)
+          setPositiveNotification(`Deleted ${person.name}`)
+          positiveNotificationTime()
         })
-
-      setPositiveNotification(`Deleted ${person.name}`)
-      positiveNotificationTime()
+        .catch(error => {
+          setErrorNotification(`Käyttäjän ${person.name} poistamisessa ongelma! sen ID on ${person.id}`)
+          errorNotificationTime()
+        })
     }
   }
 
