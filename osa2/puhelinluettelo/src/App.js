@@ -134,7 +134,7 @@ const App = () => {
           positiveNotificationTime()
         })
         .catch(error => {
-          setErrorNotification(`Käyttäjän ${person.name} poistamisessa ongelma! sen ID on ${person.id}`)
+          setErrorNotification(`Information of ${person.name} has already been removed from the server`)
           errorNotificationTime()
         })
     }
