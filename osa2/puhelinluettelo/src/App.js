@@ -74,22 +74,23 @@ const App = () => {
     const newNumber = nameObject.number
     const changedPerson = { ...person, number: newNumber }
 
-    Contacts
-      .update(person.id, changedPerson)
-      .then(p => {
-        setPersons(persons.map(p => p.id !== id ? p : changedPerson))
-        setPositiveNotification(`Changed the phone number of ${person.name}`)
-        positiveNotificationTime()
-      })
-      .catch(error => {
-        if (name.length < 3 || newNumber.length < 8) {
-          const errorMessage = error.response.data.error
-          setErrorNotification(`${errorMessage}`)
-        } else {
+    if (name.length < 3 || newNumber.length < 8) {
+      const errorMessage = 'Name must contain at least 3 characters and number 8 characters'
+      setErrorNotification(`${errorMessage}`)
+      errorNotificationTime()
+    } else {
+      Contacts
+        .update(person.id, changedPerson)
+        .then(p => {
+          setPersons(persons.map(p => p.id !== id ? p : changedPerson))
+          setPositiveNotification(`Changed the phone number of ${person.name}`)
+          positiveNotificationTime()
+        })
+        .catch(error => {
           setErrorNotification(`Information of ${person.name} has already been removed from the server`)
-        }
-        errorNotificationTime()
-      })
+          errorNotificationTime()
+        })
+    }
   }
 
   const handleNameChange = (event) => {
