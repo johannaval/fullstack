@@ -1,0 +1,1 @@
+PUT http://localhost:3003/api/blogs/60e70b244d9aa04597562b62
