@@ -1,19 +1,23 @@
 import { act } from "react-dom/cjs/react-dom-test-utils.production.min"
+let timer = ''
 
+export const setNotification = (message, time) => {
 
-export const setNotification = (message) => {
+    time = time * 1000
 
-    return ({
-        type: 'SET_NOTIFICATION',
-        data: { message }
-    })
-}
+    return async dispatch => {
 
-export const hideNotification = () => {
+        dispatch({
+            type: 'SET_NOTIFICATION',
+            data: { message }
+        })
+        clearTimeout(timer)
 
-    return ({
-        type: 'HIDE_NOTIFICATION',
-    })
+        timer = setTimeout(() =>
+            dispatch({
+                type: 'HIDE_NOTIFICATION',
+            }), time)
+    }
 }
 
 const notificationReducer = (state = '', action) => {
@@ -21,6 +25,7 @@ const notificationReducer = (state = '', action) => {
     switch (action.type) {
 
         case 'SET_NOTIFICATION':
+
             state = action.data.message
             return state
 
