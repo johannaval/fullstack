@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5lbGxpIiwiaWQiOiI2MGUzMjdkMmJmM2ZlMTA4Zjg1ZGUwZDkiLCJpYXQiOjE2MjU5MTE1MjF9.KI-DlNGgFzaVwQiP1CxDRPYgrDPJdlSwWSZlJb5bFDk
+
+{
+    "title": "Nellin sadas oma kirja",
+    "author": "Nelli",
+    "url": "tässä on urli nellin",
+    "likes": 550,
+    "userId": "60e327d2bf3fe108f85de0d9"
+}
