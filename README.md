@@ -8,4 +8,5 @@
 * [Osa 5](https://github.com/johannaval/fullstack/tree/master/osa5)
 * [Osa 6](https://github.com/johannaval/fullstack/tree/master/osa6)
 * [Osa 7](https://github.com/johannaval/fullstack/tree/master/osa7)
+* [Osa 8](https://github.com/johannaval/fullstack/tree/master/osa8)
 
